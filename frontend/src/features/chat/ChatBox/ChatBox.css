@@ -21,14 +21,14 @@
 }
 
 .user-profile {
-  padding: 20px;
+  padding: 10px;
   background-color: #ffffff;
-  border-bottom: 1px solid #eeeeee;
+  /* border-bottom: 1px solid #eeeeee; */
 }
 
 .user-profile h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.6rem;
   color: #0084ff;
 }
 
@@ -83,7 +83,7 @@
   padding: 20px 30px;
   display: flex;
   flex-direction: column;
-  background-color: #fafafa;
+  background-color: rgb(243, 241, 241);
 }
 
 /* Custom thanh cuộn cho đẹp */

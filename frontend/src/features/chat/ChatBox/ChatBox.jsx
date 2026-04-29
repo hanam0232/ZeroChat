@@ -1,46 +1,21 @@
 import ConversationList from "../../sidebar/ConversationList/ConversationList";
 import MessageInput from "../../../components/MessageInput/MessageInput";
 import MessageItem from "../../../components/MessageItem/MessageItem";
+import MessageList from "../../../assets/UserData/MessageList.jsx";
+import FriendList from "../../../assets/UserData/FriendList.jsx";
 import SearchBar from "../../sidebar/SearchBar/SearchBar";
 import { useState, useRef, useEffect } from "react";
 import "./ChatBox.css";
 
 const ChatBox = () => {
-  // 1. Danh sách bạn bè
-  const [friends] = useState([
-    { id: "1", name: "Van Khanh", lastMsg: "To rat thich an cut" },
-    { id: "2", name: "Admin", lastMsg: "Dit me may" },
-  ]);
+  // 1. Danh sách bạn bè (src/assets/UserData)
+  const [friends] = useState(FriendList);
 
   // 2. State quản lý người đang chat (Mặc định là người đầu tiên)
   const [activeFriend, setActiveFriend] = useState(friends[0]);
 
-  // 3. Logic lưu trữ tin nhắn theo từng ID bạn bè (Object Mapping)
-  const [allMessages, setAllMessages] = useState({
-    1: [
-      {
-        id: "m1",
-        text: "Vân Khánh ơi cậu thích ăn cứt không",
-        sender: "me",
-        time: "01:00 CH",
-      },
-      {
-        id: "m2",
-        text: "Có, cứt là món tớ thích nhất",
-        sender: "other",
-        time: "01:01 CH",
-      },
-    ],
-    2: [
-      {
-        id: "m3",
-        text: "Chào Admin, cho em hỏi tí",
-        sender: "me",
-        time: "09:00 SA",
-      },
-      { id: "m4", text: "Dit me may", sender: "other", time: "09:01 SA" },
-    ],
-  });
+  // 3. Logic lưu trữ tin nhắn theo từng ID bạn bè (src/assets/UserData)
+  const [allMessages, setAllMessages] = useState(MessageList);
   // Ô tìm kiếm cuộc hội thoại
   const [searchTerm, setSearchTerm] = useState("");
   const filteredFriends = friends.filter((friend) =>
@@ -105,6 +80,7 @@ const ChatBox = () => {
       {/* Khung chat chính */}
       <div className="chat-main">
         <div className="chat-header">
+          {/* Hinh dai dien */}
           <h3>{activeFriend.name}</h3>
         </div>
 

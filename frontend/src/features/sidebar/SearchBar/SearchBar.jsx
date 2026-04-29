@@ -7,7 +7,7 @@ const SearchBar = ({ onSearch }) => {
       <Search className="icon-search" />
       <input
         type="text"
-        placeholder="Tìm kiếm bạn bè..."
+        placeholder="Tìm kiếm"
         onChange={(e) => onSearch(e.target.value)} // Báo kết quả ngay khi gõ
       />
     </div>

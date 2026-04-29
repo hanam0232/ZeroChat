@@ -1,4 +1,4 @@
-import "Sidebar.css";
+// import "./Sidebar.css";
 
 const Sidebar = ({ friends, activeFriendId, onSelect }) => {
   return (
