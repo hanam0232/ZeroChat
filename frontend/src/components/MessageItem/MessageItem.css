@@ -1,0 +1,88 @@
+/* 1. Layout tổng cho từng bong bóng tin nhắn */
+.message {
+  display: flex;
+  flex-direction: column; /* Quan trọng: Xếp nội dung trên, thời gian dưới */
+  width: fit-content;
+  max-width: 70%;
+  padding: 10px 14px; /* Giảm nhẹ padding để cân đối */
+  margin-bottom: 12px;
+  font-size: 18px;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+/* 2. Tin nhắn của mình (Bên phải) */
+.message.sent {
+  align-self: flex-end; /* Đẩy cả khối sang phải */
+  align-items: flex-start; /* Đẩy chữ thời gian sang sát lề trái của bong bóng */
+  background-color: #0084ff;
+  color: white;
+  border-radius: 18px 18px 4px 18px;
+}
+
+/* 3. Tin nhắn người khác (Bên trái) */
+.message.received {
+  align-self: flex-start; /* Đẩy cả khối sang trái */
+  align-items: flex-end; /* Đẩy chữ thời gian sang sát lề phải của bong bóng */
+  background-color: #e4e6eb;
+  color: #050505;
+  border-radius: 18px 18px 18px 4px;
+}
+
+/* 4. Nội dung văn bản */
+.message-text {
+  display: block;
+  width: 100%;
+}
+
+/* 5. Chữ hiển thị thời gian (Nằm gọn bên dưới text) */
+.message-time {
+  font-size: 11px;
+  margin-top: 4px; /* Khoảng cách nhỏ giữa text và thời gian */
+  opacity: 0.8; /* Độ mờ vừa phải để vẫn dễ đọc */
+  font-weight: normal;
+  /* Nếu là tin nhắn của mình thì chữ thời gian màu nhạt hơn chút cho đẹp */
+}
+
+.message.sent .message-time {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.message.received .message-time {
+  color: #65676b;
+}
+
+/* 6. Khung nhập liệu (Giữ nguyên hoặc tinh chỉnh nhẹ) */
+.message-input {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: white;
+  border-top: 1px solid #ddd;
+  gap: 10px;
+}
+
+.message-input input {
+  flex: 1;
+  height: 45px;
+  padding: 0 20px;
+  border-radius: 25px;
+  border: 1px solid #e4e6eb;
+  outline: none;
+  font-size: 15px;
+}
+
+.message-input button {
+  background-color: #0084ff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.message-input button:hover {
+  background-color: #0073e6;
+}

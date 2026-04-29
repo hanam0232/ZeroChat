@@ -1,0 +1,60 @@
+/* Khung bọc ngoài cùng (thẻ form) */
+.message-input {
+  display: flex;
+  align-items: center;
+  padding: 15px 25px; /* Khoảng cách rộng rãi cho hiện đại */
+  background-color: #ffffff;
+  border-top: 1px solid #eeeeee;
+  gap: 12px; /* Khoảng cách giữa ô input và nút gửi */
+}
+
+/* Ô nhập liệu */
+.message-input input {
+  flex: 1; /* Chiếm hết phần diện tích còn lại */
+  height: 48px; /* Chiều cao tiêu chuẩn, dễ bấm trên mobile */
+  padding: 0 20px;
+  border-radius: 24px; /* Bo tròn hoàn toàn */
+  border: 1px solid #e4e6eb;
+  background-color: #f0f2f5;
+  outline: none; /* Bỏ viền xanh mặc định của trình duyệt */
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+/* Hiệu ứng khi người dùng click vào ô nhập */
+.message-input input:focus {
+  background-color: #ffffff;
+  border-color: #0084ff;
+  box-shadow: 0 0 0 2px rgba(0, 132, 255, 0.1);
+}
+
+/* Nút gửi tin nhắn */
+.message-input button {
+  height: 44px;
+  padding: 0 20px;
+  background-color: #0084ff;
+  color: white;
+  border: none;
+  border-radius: 22px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+}
+
+/* Hiệu ứng di chuột và nhấn nút */
+.message-input button:hover {
+  background-color: #0073e6;
+}
+
+.message-input button:active {
+  transform: scale(0.95); /* Nhấn xuống sẽ hơi co lại một chút */
+}
+
+/* Nếu nút bị disabled (không cho gửi khi chưa gõ gì) */
+.message-input button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
