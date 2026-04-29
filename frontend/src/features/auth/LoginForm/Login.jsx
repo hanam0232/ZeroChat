@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
 import "./Login.css";
 
 //Tạo default data chưa login là rỗng ""
@@ -20,9 +21,37 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login Success", formData);
+
+    try {
+      // 1. Gửi yêu cầu đăng nhập đến Server
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        {
+          username: formData.username,
+          password: formData.password,
+        },
+      );
+
+      // 2. Nếu Server trả về status 200 (Thành công)
+      if (response.status === 200) {
+        // Lưu thông tin user THẬT từ MongoDB trả về vào localStorage
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+
+        // Thông báo nhẹ cái cho phấn khởi
+        // console.log("Đăng nhập thành công:", response.data.user);
+
+        // 3. Chuyển hướng vào trang Chat
+        window.location.href = "/chat";
+      }
+    } catch (error) {
+      // 4. Xử lý các lỗi từ Server (Sai pass, không tồn tại user...)
+      const errorMsg =
+        error.response?.data?.message || "Đăng nhập thất bại rồi!";
+      alert(errorMsg);
+      console.error("Lỗi Login:", error);
+    }
   };
 
   return (

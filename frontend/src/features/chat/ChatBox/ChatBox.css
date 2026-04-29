@@ -23,13 +23,19 @@
 .user-profile {
   padding: 10px;
   background-color: #ffffff;
-  /* border-bottom: 1px solid #eeeeee; */
+
+  display: flex;
+  justify-content: space-between; /* Đẩy h3 sang trái, Logout sang phải */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  width: 100%; /* Đảm bảo chiếm hết chiều ngang sidebar */
+  padding: 10px 15px;
 }
 
 .user-profile h3 {
   margin: 0;
   font-size: 1.6rem;
   color: #0084ff;
+  text-transform: uppercase;
 }
 
 .friend-list {

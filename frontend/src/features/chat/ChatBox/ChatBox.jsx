@@ -3,19 +3,17 @@ import MessageInput from "../../../components/MessageInput/MessageInput";
 import MessageItem from "../../../components/MessageItem/MessageItem";
 import MessageList from "../../../assets/UserData/MessageList.jsx";
 import FriendList from "../../../assets/UserData/FriendList.jsx";
+import { useAuth } from "../../../components/hooks/useAuth.jsx";
+import Logout from "../../../components/Logout/Logout.jsx";
 import SearchBar from "../../sidebar/SearchBar/SearchBar";
 import { useState, useRef, useEffect } from "react";
 import "./ChatBox.css";
 
 const ChatBox = () => {
-  // 1. Danh sách bạn bè (src/assets/UserData)
-  const [friends] = useState(FriendList);
+  const [friends] = useState(FriendList); // 1. Danh sách bạn bè (src/assets/UserData)
+  const [activeFriend, setActiveFriend] = useState(friends[0]); // 2. State quản lý người đang chat (Mặc định là người đầu tiên)
+  const [allMessages, setAllMessages] = useState(MessageList); // 3. Logic lưu trữ tin nhắn theo từng ID bạn bè (src/assets/UserData)
 
-  // 2. State quản lý người đang chat (Mặc định là người đầu tiên)
-  const [activeFriend, setActiveFriend] = useState(friends[0]);
-
-  // 3. Logic lưu trữ tin nhắn theo từng ID bạn bè (src/assets/UserData)
-  const [allMessages, setAllMessages] = useState(MessageList);
   // Ô tìm kiếm cuộc hội thoại
   const [searchTerm, setSearchTerm] = useState("");
   const filteredFriends = friends.filter((friend) =>
@@ -58,12 +56,16 @@ const ChatBox = () => {
     messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [currentMessages]); // Chạy lại mỗi khi danh sách tin nhắn hiện tại thay đổi
 
+  //Gọi tên Account
+  const { displayName } = useAuth();
+
   return (
     <div className="chat-container">
       {/* Sidebar - Thanh bên trái */}
       <div className="sidebar">
         <div className="user-profile">
-          <h3>HELLO, NAM</h3>
+          <h3>Hello, {displayName}</h3>
+          <Logout />
         </div>
 
         {/* O tim kiem */}

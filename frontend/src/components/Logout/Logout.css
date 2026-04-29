@@ -1,0 +1,112 @@
+/* Nút Logout ban đầu */
+.logout-btn {
+  background: transparent;
+  border: none;
+  color: #65676b;
+  cursor: pointer;
+  display: flex;
+  padding: 8px;
+  margin: 0;
+  width: auto;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #ffeef0;
+  color: #ff4d4f;
+}
+
+/* Lớp nền tối bao phủ toàn màn hình */
+.logout-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* Độ tối 50% */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Luôn nằm trên cùng */
+}
+
+/* Hộp thoại hình chữ nhật */
+.logout-modal {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 350px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.logout-modal h3 {
+  margin-top: 0;
+  width: fit-content;
+  color: #1c1e21;
+}
+
+/* Container chứa 2 nút */
+.modal-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+  width: 100%;
+}
+
+/* Reset style cho các nút trong Modal */
+.modal-actions button {
+  flex: 1;
+  min-width: 100px;
+  padding: 12px 10px;
+  white-space: nowrap;
+  font-size: 15px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Đảm bảo Modal đủ rộng để chứa nội dung */
+.logout-modal {
+  width: 90%;
+  max-width: 400px; /* Tăng max-width lên một chút (từ 350 lên 400) */
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.btn-no {
+  background-color: #f0f2f5;
+  color: #1c1e21;
+}
+
+.btn-no:hover {
+  background-color: #e4e6eb;
+}
+
+.btn-yes {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+.btn-yes:hover {
+  background-color: #ff7875;
+}
+
+/* Hiệu ứng hiện ra mượt mà */
+@keyframes fadeIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

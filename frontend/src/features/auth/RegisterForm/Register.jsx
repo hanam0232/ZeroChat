@@ -1,10 +1,14 @@
 import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import "./Register.css";
 
 //Tạo default data chưa login là rỗng ""
 const Register = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     AccountName: "",
     username: "",
@@ -22,24 +26,44 @@ const Register = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //So sánh 2 mật khẩu
+    // 1. Kiểm tra độ dài mật khẩu (Check ở Frontend cho nhanh)
+    if (formData.password1.length < 6) {
+      alert("Mật khẩu phải có ít nhất 6 ký tự!");
+      return;
+    }
+
+    // 2. So sánh 2 mật khẩu
     if (formData.password1 !== formData.password2) {
-      alert("Mật khẩu không trùng khớp");
+      alert("Mật khẩu không trùng khớp!");
       return;
     }
 
-    //Kiểm tra độ dài mật khẩu
-    if (formData.password1.length < 6 || formData.password2.length < 6) {
-      alert("Mật khẩu quá ngắn");
-      return;
-    }
+    try {
+      // 3. Gửi dữ liệu sang Backend
+      // Lưu ý: Map đúng tên biến mà Backend đang chờ (displayName, username, password)
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/register",
+        {
+          displayName: formData.AccountName, // Lấy AccountName làm tên hiển thị
+          username: formData.username, // Tên đăng nhập
+          password: formData.password1, // Mật khẩu đã qua kiểm tra
+        },
+      );
 
-    //Nếu đáp ứng điều kiện trên
-    console.log("Register Success", formData);
-    alert("Đăng kí tài khoản thành công");
+      // 4. Xử lý khi thành công
+      if (response.status === 201) {
+        alert("Đăng ký thành công! Đang chuyển sang trang đăng nhập...");
+        navigate("/login"); // Dùng navigate thay vì window.location cho mượt
+      }
+    } catch (error) {
+      // 5. Xử lý lỗi từ Backend (Ví dụ: trùng username)
+      const errorMsg = error.response?.data?.message || "Lỗi đăng ký rồi!";
+      alert(errorMsg);
+      console.error("Lỗi Register:", error);
+    }
   };
 
   return (
