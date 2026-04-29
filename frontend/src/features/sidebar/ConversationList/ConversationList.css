@@ -1,0 +1,72 @@
+/* 1. Khung bao quanh danh sách */
+.friend-list {
+  flex: 1;
+  overflow-y: auto; /* Cho phép cuộn nếu danh sách quá dài */
+  background-color: #ffffff;
+}
+
+/* 2. Từng mục hội thoại */
+.friend-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-bottom: 1px solid #f0f2f5;
+  gap: 12px; /* Khoảng cách nếu sau này bạn thêm Avatar */
+}
+
+/* 3. Hiệu ứng khi di chuột qua */
+.friend-item:hover {
+  background-color: #f5f6f7;
+}
+
+/* 4. Trạng thái đang chat (Active) */
+.friend-item.active {
+  background-color: #e7f3ff; /* Màu xanh nhạt */
+  border-left: 4px solid #0084ff; /* Vạch xanh bên trái tạo điểm nhấn */
+}
+
+/* 5. Cấu trúc thông tin bên trong */
+.friend-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden; /* Để xử lý text quá dài */
+}
+
+.friend-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: #050505;
+  margin-bottom: 2px;
+}
+
+/* 6. Tin nhắn cuối cùng (Last message) */
+.last-message {
+  font-size: 13px;
+  color: #65676b;
+  white-space: nowrap; /* Không cho xuống dòng */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Hiện dấu ... nếu tin nhắn quá dài */
+}
+
+/* 7. Hiệu ứng cho Active text */
+.friend-item.active .friend-name {
+  color: #0084ff;
+}
+
+.friend-item.active .last-message {
+  color: #0073e6;
+  font-weight: 500;
+}
+
+/* Tùy chỉnh thanh cuộn cho Sidebar */
+.friend-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.friend-list::-webkit-scrollbar-thumb {
+  background: #bcc0c4;
+  border-radius: 10px;
+}
