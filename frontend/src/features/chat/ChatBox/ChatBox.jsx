@@ -39,9 +39,9 @@ const ChatBox = () => {
     currentUser?.sentRequests?.includes(activeFriend?._id) || localRequestSent;
 
   // 4. Lấy tin nhắn của cuộc hội thoại hiện tại
-  const currentMessages = activeFriend
-    ? allMessages[activeFriend._id] || []
-    : [];
+  // const currentMessages = activeFriend
+  //   ? allMessages[activeFriend._id] || []
+  //   : [];
 
   // 5. Hàm gửi tin nhắn (Chỉ hoạt động nếu đã là bạn bè)
   const handleSendMessage = () => {
