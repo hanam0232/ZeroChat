@@ -22,9 +22,9 @@ const ChatBox = () => {
   const [localRequestSent, setLocalRequestSent] = useState(false);
 
   // 2. Reset trạng thái gửi lời mời khi người dùng chuyển sang chọn người chat khác
-  useEffect(() => {
-    setLocalRequestSent(false);
-  }, [activeFriend?._id]);
+  // useEffect(() => {
+  //   setLocalRequestSent(false);
+  // }, [activeFriend?._id]);
 
   // 3. Xác định trạng thái quan hệ giữa mình và người đang chọn
   const isFriend = currentUser?.friends?.includes(activeFriend?._id);
@@ -100,10 +100,55 @@ const ChatBox = () => {
     }
   };
 
-  const handleAccept = () =>
-    console.log("Logic Chấp nhận sẽ viết ở Backend sau");
-  const handleDecline = () =>
-    console.log("Logic Từ chối sẽ viết ở Backend sau");
+  const handleAccept = async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/users/accept-friend",
+        {
+          myId: currentUser.id,
+          targetId: activeFriend._id,
+        },
+      );
+
+      if (res.status === 200) {
+        // Cập nhật localStorage để useAuth lấy được mảng friends mới
+        const updatedUser = {
+          ...currentUser,
+          friends: [...(currentUser.friends || []), activeFriend._id],
+          friendRequests: currentUser.friendRequests.filter(
+            (id) => id !== activeFriend._id,
+          ),
+        };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+
+        alert("Hai bạn đã trở thành bạn bè! Giờ có thể nhắn tin.");
+        window.location.reload(); // Reload để MessageList và Input hiện ra
+      }
+    } catch (err) {
+      console.error("Lỗi chấp nhận:", err);
+    }
+  };
+
+  const handleDecline = async () => {
+    try {
+      await axios.post("http://localhost:5000/api/users/decline-friend", {
+        myId: currentUser.id,
+        targetId: activeFriend._id,
+      });
+
+      // Cập nhật local để mất nút Chấp nhận/Từ chối, quay về nút Kết bạn
+      const updatedUser = {
+        ...currentUser,
+        friendRequests: currentUser.friendRequests.filter(
+          (id) => id !== activeFriend._id,
+        ),
+      };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      window.location.reload();
+    } catch (err) {
+      console.error("Lỗi từ chối:", err);
+    }
+  };
 
   return (
     <div className="chat-container">
