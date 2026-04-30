@@ -2,104 +2,193 @@ import ConversationList from "../../sidebar/ConversationList/ConversationList";
 import MessageInput from "../../../components/MessageInput/MessageInput";
 import MessageItem from "../../../components/MessageItem/MessageItem";
 import MessageList from "../../../assets/UserData/MessageList.jsx";
-import FriendList from "../../../assets/UserData/FriendList.jsx";
 import { useAuth } from "../../../components/hooks/useAuth.jsx";
 import Logout from "../../../components/Logout/Logout.jsx";
 import SearchBar from "../../sidebar/SearchBar/SearchBar";
 import { useState, useRef, useEffect } from "react";
+import axios from "axios"; // Đã thêm import axios
 import "./ChatBox.css";
 
 const ChatBox = () => {
-  const [friends] = useState(FriendList); // 1. Danh sách bạn bè (src/assets/UserData)
-  const [activeFriend, setActiveFriend] = useState(friends[0]); // 2. State quản lý người đang chat (Mặc định là người đầu tiên)
-  const [allMessages, setAllMessages] = useState(MessageList); // 3. Logic lưu trữ tin nhắn theo từng ID bạn bè (src/assets/UserData)
+  const { user: currentUser, displayName } = useAuth();
 
-  // Ô tìm kiếm cuộc hội thoại
+  // 1. States quản lý giao diện
+  const [activeFriend, setActiveFriend] = useState(null);
+  const [allMessages, setAllMessages] = useState(MessageList);
+  const [newMessage, setNewMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const filteredFriends = friends.filter((friend) =>
-    friend.name.toLowerCase().includes(searchTerm.toLowerCase()),
+
+  // State để cập nhật giao diện nút bấm tức thì khi nhấn Kết bạn thành công
+  const [localRequestSent, setLocalRequestSent] = useState(false);
+
+  // 2. Reset trạng thái gửi lời mời khi người dùng chuyển sang chọn người chat khác
+  useEffect(() => {
+    setLocalRequestSent(false);
+  }, [activeFriend?._id]);
+
+  // 3. Xác định trạng thái quan hệ giữa mình và người đang chọn
+  const isFriend = currentUser?.friends?.includes(activeFriend?._id);
+
+  // Kiểm tra xem mình có nhận được lời mời từ người này không
+  const hasReceivedRequest = currentUser?.friendRequests?.includes(
+    activeFriend?._id,
   );
 
-  // 5. Lấy tin nhắn của người hiện tại (nếu chưa có thì trả về mảng rỗng)
-  const [newMessage, setNewMessage] = useState("");
-  const currentMessages = allMessages[activeFriend.id] || [];
+  // Kiểm tra xem mình đã gửi lời mời cho người này chưa (check trong DB hoặc vừa bấm xong)
+  const hasSentRequest =
+    currentUser?.sentRequests?.includes(activeFriend?._id) || localRequestSent;
 
-  // 6. Hàm gửi tin nhắn
+  // 4. Lấy tin nhắn của cuộc hội thoại hiện tại
+  const currentMessages = activeFriend
+    ? allMessages[activeFriend._id] || []
+    : [];
+
+  // 5. Hàm gửi tin nhắn (Chỉ hoạt động nếu đã là bạn bè)
   const handleSendMessage = () => {
-    if (newMessage.trim() === "") return;
-
-    const timeString = new Date().toLocaleTimeString("vi-VN", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
+    if (newMessage.trim() === "" || !isFriend) return;
 
     const msgObj = {
       id: Date.now().toString(),
       text: newMessage,
       sender: "me",
-      time: timeString,
+      time: new Date().toLocaleTimeString("vi-VN", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     };
 
-    // Cập nhật tin nhắn vào đúng KEY của người đang chat
     setAllMessages((prev) => ({
       ...prev,
-      [activeFriend.id]: [...(prev[activeFriend.id] || []), msgObj],
+      [activeFriend._id]: [...(prev[activeFriend._id] || []), msgObj],
     }));
-
     setNewMessage("");
   };
 
-  // 6. Tự động cuộn xuống khi có tin nhắn mới hoặc đổi người chat
+  // 6. Tự động cuộn xuống cuối danh sách tin nhắn
   const messageEndRef = useRef(null);
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [currentMessages]); // Chạy lại mỗi khi danh sách tin nhắn hiện tại thay đổi
+  }, [currentMessages]);
 
-  //Gọi tên Account
-  const { displayName } = useAuth();
+  // 7. Hàm xử lý Kết bạn (Gửi lên Backend)
+  const handleAddFriend = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/users/send-request",
+        {
+          targetId: activeFriend._id,
+          myId: currentUser.id, // ID của mình
+        },
+      );
+
+      if (response.status === 200) {
+        // 1. Cập nhật state local để nút đổi chữ ngay lập tức
+        setLocalRequestSent(true);
+
+        // 2. Cập nhật localStorage để khi chuyển trang quay lại vẫn nhớ
+        // Mình giả định bạn lưu danh sách đã gửi vào mảng sentRequests
+        const updatedUser = {
+          ...currentUser,
+          sentRequests: [...(currentUser.sentRequests || []), activeFriend._id],
+        };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+
+        console.log("Kết bạn thành công!");
+      }
+    } catch (error) {
+      console.error("Lỗi kết bạn:", error);
+    }
+  };
+
+  const handleAccept = () =>
+    console.log("Logic Chấp nhận sẽ viết ở Backend sau");
+  const handleDecline = () =>
+    console.log("Logic Từ chối sẽ viết ở Backend sau");
 
   return (
     <div className="chat-container">
-      {/* Sidebar - Thanh bên trái */}
+      {/* Sidebar bên trái */}
       <div className="sidebar">
         <div className="user-profile">
           <h3>Hello, {displayName}</h3>
           <Logout />
         </div>
-
-        {/* O tim kiem */}
         <SearchBar onSearch={setSearchTerm} />
-
-        {/* Danh sach cuoc hoi thoai */}
         <ConversationList
-          friends={filteredFriends}
-          activeFriendId={activeFriend.id}
+          activeFriendId={activeFriend?._id}
           onSelect={setActiveFriend}
+          searchTerm={searchTerm}
         />
       </div>
 
-      {/* Khung chat chính */}
+      {/* Khung chat chính bên phải */}
       <div className="chat-main">
-        <div className="chat-header">
-          {/* Hinh dai dien */}
-          <h3>{activeFriend.name}</h3>
-        </div>
+        {activeFriend ? (
+          <>
+            <div className="chat-header">
+              <h3>{activeFriend.displayName}</h3>
+            </div>
 
-        {/* Danh sách tin nhắn */}
-        <div className="message-list">
-          {currentMessages.map((msg) => (
-            <MessageItem key={msg.id} msg={msg} />
-          ))}
-          <div ref={messageEndRef} />
-        </div>
+            <div className="message-list">
+              {isFriend ? (
+                /* TRƯỜNG HỢP 1: ĐÃ KẾT BẠN -> HIỆN TIN NHẮN */
+                <>
+                  {currentMessages.map((msg) => (
+                    <MessageItem key={msg.id} msg={msg} />
+                  ))}
+                  <div ref={messageEndRef} />
+                </>
+              ) : (
+                /* TRƯỜNG HỢP 2: CHƯA KẾT BẠN -> HIỆN THÔNG BÁO VÀ NÚT */
+                <div className="friend-request-container">
+                  <div className="warning-box">
+                    <p>
+                      Bạn và <b>{activeFriend.displayName}</b> chưa là bạn bè
+                      trên ZeroChat.
+                    </p>
 
-        {/* Ô nhập tin nhắn */}
-        <MessageInput
-          value={newMessage}
-          onChange={setNewMessage}
-          onSend={handleSendMessage}
-        />
+                    {hasReceivedRequest ? (
+                      /* ĐỐI PHƯƠNG GỬI CHO MÌNH */
+                      <div className="button-group">
+                        <button className="btn-accept" onClick={handleAccept}>
+                          Chấp nhận
+                        </button>
+                        <button className="btn-decline" onClick={handleDecline}>
+                          Từ chối
+                        </button>
+                      </div>
+                    ) : hasSentRequest ? (
+                      /* MÌNH ĐÃ GỬI YÊU CẦU */
+                      <button className="btn-sent" disabled>
+                        Đã gửi lời mời
+                      </button>
+                    ) : (
+                      /* CHƯA CÓ TƯƠNG TÁC GÌ */
+                      <button className="btn-add" onClick={handleAddFriend}>
+                        Kết bạn
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Ô nhập tin nhắn: Chỉ hiện khi đã là bạn bè */}
+            {isFriend && (
+              <MessageInput
+                value={newMessage}
+                onChange={setNewMessage}
+                onSend={handleSendMessage}
+              />
+            )}
+          </>
+        ) : (
+          /* MÀN HÌNH CHÀO MỪNG KHI CHƯA CHỌN AI */
+          <div className="welcome-screen">
+            <h3>Chào mừng tới ZeroChat</h3>
+            <p>Chọn một người từ danh sách để bắt đầu trò chuyện</p>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -5,15 +5,19 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 const app = express();
+const userRoutes = require("./routes/userRoutes");
+const authRoutes = require("./routes/authRoutes");
+const URI = process.env.MONGODB_URI;
+
+//============================================
 
 app.use(cors());
 app.use(express.json());
-//============================================
-const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
-
 // Kết nối MongoDB
-const URI = process.env.MONGODB_URI;
+app.use("/api/users", userRoutes);
+
+//============================================
 
 mongoose
   .connect(URI)

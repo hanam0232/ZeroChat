@@ -1,72 +1,69 @@
-/* 1. Khung bao quanh danh sách */
+/* 1. Khung bao quanh */
 .friend-list {
   flex: 1;
-  overflow-y: auto; /* Cho phép cuộn nếu danh sách quá dài */
-  background-color: #ffffff;
+  overflow-y: auto;
+  background-color: #f0f2f5; /* Nền tối hơn một chút cho tổng thể */
 }
 
-/* 2. Từng mục hội thoại */
+/* 2. Mục mặc định (Chưa kết bạn - Tối hơn/Mờ hơn) */
 .friend-item {
   display: flex;
   align-items: center;
   padding: 12px 16px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  border-bottom: 1px solid #f0f2f5;
-  gap: 12px; /* Khoảng cách nếu sau này bạn thêm Avatar */
+  border-bottom: 1px solid #e4e6eb;
+  gap: 12px;
+
+  /* Hiệu ứng cho người chưa kết bạn */
+  background-color: #e4e6eb;
+  opacity: 0.7;
+  filter: grayscale(0.5); /* Hơi xám đi một chút */
 }
 
-/* 3. Hiệu ứng khi di chuột qua */
+/* 3. Khi đã là bạn bè (Sáng lên) */
+.friend-item.is-friend {
+  background-color: #ffffff; /* Sáng trắng */
+  opacity: 1;
+  filter: grayscale(0); /* Hiện màu sắc bình thường */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* 4. Hiệu ứng Hover & Active */
 .friend-item:hover {
+  opacity: 0.9;
   background-color: #f5f6f7;
 }
 
-/* 4. Trạng thái đang chat (Active) */
 .friend-item.active {
-  background-color: #e7f3ff; /* Màu xanh nhạt */
-  border-left: 4px solid #0084ff; /* Vạch xanh bên trái tạo điểm nhấn */
+  background-color: #e7f3ff;
+  border-left: 4px solid #0084ff;
+  opacity: 1;
 }
 
-/* 5. Cấu trúc thông tin bên trong */
+/* 5. Cấu trúc thông tin (Giữ nguyên logic của Nam) */
 .friend-info {
   display: flex;
   flex-direction: column;
   flex: 1;
-  overflow: hidden; /* Để xử lý text quá dài */
 }
 
 .friend-name {
   font-weight: 600;
   font-size: 15px;
   color: #050505;
-  margin-bottom: 2px;
 }
 
-/* 6. Tin nhắn cuối cùng (Last message) */
-.last-message {
-  font-size: 13px;
-  color: #65676b;
-  white-space: nowrap; /* Không cho xuống dòng */
-  overflow: hidden;
-  text-overflow: ellipsis; /* Hiện dấu ... nếu tin nhắn quá dài */
-}
-
-/* 7. Hiệu ứng cho Active text */
-.friend-item.active .friend-name {
-  color: #0084ff;
-}
-
-.friend-item.active .last-message {
-  color: #0073e6;
-  font-weight: 500;
-}
-
-/* Tùy chỉnh thanh cuộn cho Sidebar */
-.friend-list::-webkit-scrollbar {
-  width: 4px;
-}
-
-.friend-list::-webkit-scrollbar-thumb {
+/* 6. Label hiển thị trạng thái bạn bè (Tùy chọn thêm) */
+.friend-status-label {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
   background: #bcc0c4;
-  border-radius: 10px;
+  width: fit-content;
+}
+
+.is-friend .friend-status-label {
+  background: #e7f3ff;
+  color: #0084ff;
 }
